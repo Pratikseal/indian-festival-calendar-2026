@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Indian Calendar 2026 – Full Year</title>
+<title>Indian Festival Calendar 2026</title>
 
 <style>
 *{
@@ -12,42 +12,43 @@
 
 body{
   margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
   background:#05080f;
   color:white;
 }
 
-h1{
-  text-align:center;
-  margin:20px 0;
-  text-shadow:0 0 15px cyan;
-}
-
-/* ===== YEAR GRID ===== */
-.year{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:20px;
+.app{
+  width:470px;
   padding:20px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 40px cyan;
 }
 
-/* ===== MONTH CARD ===== */
-.month{
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(18px);
-  border-radius:18px;
-  padding:12px;
-  box-shadow:0 0 25px rgba(0,255,255,.25);
-  animation:fadeIn .8s ease;
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
 }
 
-.month h2{
-  text-align:center;
-  margin:5px 0 10px;
-  font-size:18px;
-  text-shadow:0 0 10px cyan;
+header h1{
+  font-size:22px;
+  text-shadow:0 0 12px cyan;
 }
 
-/* ===== WEEKDAYS ===== */
+header button{
+  background:none;
+  border:none;
+  color:cyan;
+  font-size:22px;
+  cursor:pointer;
+}
+
 .weekdays, .days{
   display:grid;
   grid-template-columns:repeat(7,1fr);
@@ -55,71 +56,92 @@ h1{
 
 .weekdays div{
   text-align:center;
-  font-size:11px;
-  opacity:.6;
-  margin-bottom:4px;
+  opacity:.7;
+  margin-bottom:5px;
 }
 
-/* ===== DAYS ===== */
+.days{
+  animation:monthSwitch .6s ease;
+}
+
 .days div{
-  height:34px;
-  margin:2px;
-  border-radius:8px;
+  height:60px;
+  margin:4px;
+  border-radius:14px;
   background:rgba(255,255,255,0.07);
   display:flex;
-  align-items:center;
+  flex-direction:column;
   justify-content:center;
-  font-size:12px;
-  transition:.25s;
+  align-items:center;
+  font-size:14px;
+  position:relative;
+  transition:.3s;
 }
 
 .days div:hover{
-  transform:scale(1.15);
-  box-shadow:0 0 12px cyan;
+  transform:scale(1.12);
+  box-shadow:0 0 20px cyan;
 }
 
-/* ===== FESTIVAL ===== */
+/* FESTIVAL STYLE */
 .festival{
   background:linear-gradient(135deg,#ff0080,#7928ca);
-  box-shadow:0 0 12px #ff00ff;
-  animation:pulse 2s infinite;
-  font-size:10px;
-  flex-direction:column;
+  box-shadow:0 0 18px #ff00ff;
+  animation:pulseGlow 2s infinite;
 }
 
 .icon{
-  font-size:14px;
-  animation:float 2s infinite ease-in-out;
+  font-size:18px;
+  animation:floatIcon 2s infinite ease-in-out;
 }
 
-/* ===== ANIMATIONS ===== */
-@keyframes pulse{
-  0%{box-shadow:0 0 8px #ff00ff}
-  50%{box-shadow:0 0 18px #ff66ff}
-  100%{box-shadow:0 0 8px #ff00ff}
+.days span{
+  font-size:10px;
+  text-align:center;
 }
 
-@keyframes float{
+/* ANIMATIONS */
+@keyframes monthSwitch{
+  from{opacity:0; transform:translateX(60px)}
+  to{opacity:1; transform:translateX(0)}
+}
+
+@keyframes pulseGlow{
+  0%{box-shadow:0 0 10px #ff00ff}
+  50%{box-shadow:0 0 28px #ff66ff}
+  100%{box-shadow:0 0 10px #ff00ff}
+}
+
+@keyframes floatIcon{
   0%{transform:translateY(0)}
-  50%{transform:translateY(-4px)}
+  50%{transform:translateY(-6px)}
   100%{transform:translateY(0)}
-}
-
-@keyframes fadeIn{
-  from{opacity:0; transform:scale(.95)}
-  to{opacity:1; transform:scale(1)}
 }
 </style>
 </head>
 
 <body>
 
-<h1>Indian Festival Calendar 2026</h1>
+<div class="app">
+  <header>
+    <button id="prev">⟵</button>
+    <h1 id="monthYear"></h1>
+    <button id="next">⟶</button>
+  </header>
 
-<div class="year" id="year"></div>
+  <div class="weekdays">
+    <div>Sun</div><div>Mon</div><div>Tue</div>
+    <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+  </div>
+
+  <div class="days" id="days"></div>
+</div>
 
 <script>
-const yearEl = document.getElementById("year");
+const daysEl = document.getElementById("days");
+const monthYearEl = document.getElementById("monthYear");
+
+let month = 0;
 const year = 2026;
 
 const months = [
@@ -127,77 +149,79 @@ const months = [
   "July","August","September","October","November","December"
 ];
 
-/* ===== INDIAN FESTIVALS 2026 ===== */
+/* ===== EXTENDED INDIAN FESTIVALS (2026) ===== */
 const festivals = {
-  "2026-01-14": {n:"Makar Sankranti", i:"🌾"},
-  "2026-01-26": {n:"Republic Day", i:"🇮🇳"},
-  "2026-03-08": {n:"Holi", i:"🎨"},
-  "2026-03-30": {n:"Ram Navami", i:"🏹"},
-  "2026-04-02": {n:"Mahavir Jayanti", i:"🕉️"},
-  "2026-04-14": {n:"Ambedkar Jayanti", i:"📘"},
-  "2026-08-15": {n:"Independence Day", i:"🇮🇳"},
-  "2026-08-19": {n:"Raksha Bandhan", i:"🧵"},
-  "2026-08-28": {n:"Janmashtami", i:"🦚"},
-  "2026-09-17": {n:"Ganesh Chaturthi", i:"🐘"},
-  "2026-10-01": {n:"Maha Saptami", i:"🪔"},
-  "2026-10-02": {n:"Maha Ashtami / Gandhi Jayanti", i:"🕊️"},
-  "2026-10-03": {n:"Maha Navami", i:"🔥"},
-  "2026-10-04": {n:"Dussehra", i:"🏹"},
-  "2026-10-20": {n:"Diwali", i:"🪔"},
-  "2026-10-21": {n:"Govardhan Puja", i:"🌄"},
-  "2026-10-22": {n:"Bhai Dooj", i:"💞"},
-  "2026-11-07": {n:"Chhath Puja", i:"🌅"},
-  "2026-11-24": {n:"Guru Nanak Jayanti", i:"🙏"},
-  "2026-12-25": {n:"Christmas", i:"🎄"}
+  "2026-01-14": {name:"Makar Sankranti", icon:"🌾"},
+  "2026-01-26": {name:"Republic Day", icon:"🇮🇳"},
+
+  "2026-03-08": {name:"Holi", icon:"🎨"},
+  "2026-03-30": {name:"Ram Navami", icon:"🏹"},
+
+  "2026-04-14": {name:"Ambedkar Jayanti", icon:"📘"},
+  "2026-04-02": {name:"Mahavir Jayanti", icon:"🕉️"},
+
+  "2026-08-15": {name:"Independence Day", icon:"🇮🇳"},
+  "2026-08-19": {name:"Raksha Bandhan", icon:"🧵"},
+  "2026-08-28": {name:"Janmashtami", icon:"🦚"},
+
+  "2026-09-17": {name:"Ganesh Chaturthi", icon:"🐘"},
+
+  "2026-10-01": {name:"Maha Saptami", icon:"🪔"},
+  "2026-10-02": {name:"Maha Ashtami / Gandhi Jayanti", icon:"🕊️"},
+  "2026-10-03": {name:"Maha Navami", icon:"🔥"},
+  "2026-10-04": {name:"Vijaya Dashami (Dussehra)", icon:"🏹"},
+  "2026-10-20": {name:"Diwali", icon:"🪔"},
+  "2026-10-21": {name:"Govardhan Puja", icon:"🌄"},
+  "2026-10-22": {name:"Bhai Dooj", icon:"💞"},
+
+  "2026-11-07": {name:"Chhath Puja", icon:"🌅"},
+  "2026-11-24": {name:"Guru Nanak Jayanti", icon:"🙏"},
+
+  "2026-12-25": {name:"Christmas", icon:"🎄"}
 };
 
-months.forEach((monthName, m)=>{
-  const monthDiv = document.createElement("div");
-  monthDiv.className = "month";
+function renderCalendar(){
+  daysEl.innerHTML="";
+  monthYearEl.textContent = months[month]+" "+year;
 
-  const title = document.createElement("h2");
-  title.textContent = monthName;
-  monthDiv.appendChild(title);
-
-  const weekdays = document.createElement("div");
-  weekdays.className = "weekdays";
-  ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d=>{
-    const w = document.createElement("div");
-    w.textContent = d;
-    weekdays.appendChild(w);
-  });
-  monthDiv.appendChild(weekdays);
-
-  const days = document.createElement("div");
-  days.className = "days";
-
-  const firstDay = new Date(year,m,1).getDay();
-  const lastDate = new Date(year,m+1,0).getDate();
+  const firstDay = new Date(year,month,1).getDay();
+  const lastDate = new Date(year,month+1,0).getDate();
 
   for(let i=0;i<firstDay;i++){
-    days.appendChild(document.createElement("div"));
+    daysEl.appendChild(document.createElement("div"));
   }
 
   for(let d=1;d<=lastDate;d++){
     const box = document.createElement("div");
-    const key = `${year}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const fullDate =
+      `${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
 
-    if(festivals[key]){
-      box.className = "festival";
+    if(festivals[fullDate]){
+      box.classList.add("festival");
       box.innerHTML = `
-        <div class="icon">${festivals[key].i}</div>
+        <div class="icon">${festivals[fullDate].icon}</div>
         <div>${d}</div>
+        <span>${festivals[fullDate].name}</span>
       `;
-      box.title = festivals[key].n;
     } else {
       box.textContent = d;
     }
-    days.appendChild(box);
-  }
 
-  monthDiv.appendChild(days);
-  yearEl.appendChild(monthDiv);
-});
+    daysEl.appendChild(box);
+  }
+}
+
+document.getElementById("prev").onclick=()=>{
+  month = (month-1+12)%12;
+  renderCalendar();
+};
+
+document.getElementById("next").onclick=()=>{
+  month = (month+1)%12;
+  renderCalendar();
+};
+
+renderCalendar();
 </script>
 
 </body>
